@@ -41,7 +41,7 @@ for (var type in streams.Readable) {
 
 // Demos:
 
-streams.Readable["Read File"]("people.csv")
+streams.Readable["Read File"]("input/people.csv")
     .pipe(streams.Duplex["Parse CSV as Object"]())
     .pipe(streams.Duplex["Turn Into JSON Array String"]())
     .pipe(streams.Writable["STDOUT"]())
