@@ -44,7 +44,7 @@ module.exports = {
 
         "Parse JSON": function(jsonPath /* * */) {
             var JSONStream = require("JSONStream");
-            return JSONStream.parse(jsonPath || "*");
+            return JSONStream.parse(jsonPath);
         },
 
         "Turn Into JSON Array String": function() {
@@ -97,8 +97,8 @@ module.exports = {
 
         "Convert Object w/ Handlebars": function(source /* <tr><td><a href='{{URL}}'>{{Name}}</a></td><td>{{City}}</td></tr> */) {
             var Handlebars = require("handlebars");
-            var tmpl = Handlebars.compile(source);
             var es = require("event-stream");
+            var tmpl = Handlebars.compile(source);
             return es.mapSync(tmpl);
         },
 
@@ -123,24 +123,11 @@ module.exports = {
         },
 
         "Sprintf": function(format /* <tr><td><a href='%(URL)s'>%(Name)s</a></td><td>%(City)s</td></tr>|<tr><td><a href='%2$s'>%1$s</a></td><td>%3$s</td></tr> */) {
-            var vsprintf = require("sprintf").vsprintf;
+            var sprintf = require("sprintf");
             var es = require("event-stream");
             return es.mapSync(function(data) {
-                return vsprintf(format, data);
+                return sprintf.vsprintf(format, data);
             });
-        }
-    },
-
-    "End": {
-        "Open File": function(fileName) {
-            var open = require("open");
-            var path = require("path");
-            open(path.join(__dirname, fileName));
-        },
-
-        "Open URL": function(url) {
-            var open = require("open");
-            open(url);
         }
     }
 };

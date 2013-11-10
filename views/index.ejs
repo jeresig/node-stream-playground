@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Lego Streams</title>
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <script>
+        var BLOCKS = <%- blocks %>;
+        </script>
+        <script src="/javascripts/jquery-2.0.3.min.js"></script>
+        <script src="/javascripts/handlebars.min.js"></script>
+        <script src="/javascripts/main.js"></script>
+    </head>
+    <body>
+        <h1>Lego Streams</h1>
+
+        <div id="blocks"></div>
+
+        <div id="output">
+            <h1>Stream Code</h1>
+            <div class="wrap">
+                <form action="">
+                <pre class="code"></pre>
+                <input type="submit" value="Run Code"/>
+                <input type="reset" value="Reset Blocks"/>
+                </form>
+            </div>
+        </div>
+
+        <script id="blocks-tmpl" type="text/x-handlebars-template">
+        {{#each blocks}}
+        <div class="block{{#each io}}{{#if this}} {{@key}}{{/if}}{{/each}}">
+            <div class="name">{{name}}</div>
+            <div class="options">
+                <form action="">
+                    <input type="hidden" name="name" value="{{name}}"/>
+                    <pre class="code">{{{html}}}</pre>
+                    <input type="submit" class="submit" value="Add Block"/>
+                </form>
+            </div>
+        </div>
+        {{/each}}
+        </script>
+        <script id="arg-tmpl" type="text/x-handlebars-template"><select class="arg" name="{{name}}">
+        {{#each values}}
+            <option>{{this}}</option>
+        {{/each}}
+        </select></script>
+    </body>
+</html>

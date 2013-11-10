@@ -1,0 +1,53 @@
+body {
+  padding: 50px;
+  margin: 0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: #999;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.block {
+    border: 1px solid #000;
+    background: #FFF;
+    color: #000;
+    min-height: 60px;
+    width: 500px;
+    margin: 20px 0;
+    padding: 10px;
+    overflow: auto;
+}
+
+.block.hidden {
+    display: none;
+}
+
+.block .name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.code {
+    font-family: Consola, Courier New;
+    font-size: 14px;
+}
+
+div.arg {
+    padding: 5px 10px;
+}
+
+#output {
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    width: 500px;
+    overflow: auto;
+}
+
+#output .wrap {
+    border: 1px solid #000;
+    background: #FFF;
+    color: #000;
+}
