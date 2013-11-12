@@ -29,7 +29,7 @@ h1 {
     display: none;
 }
 
-.block .name {
+.block .name, .log .name {
     font-size: 18px;
     font-weight: bold;
 }
@@ -55,6 +55,7 @@ div.arg {
     top: 1%;
     right: -60%;
     width: 75%;
+    max-height: 98%;
     overflow: auto;
     display: none;
     -moz-transition: right 0.5s;

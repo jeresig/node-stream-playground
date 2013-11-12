@@ -19,64 +19,8 @@ $(function() {
     updateDisplay();
 });
 
-var renderCode = function() {
-    var requires = {};
-    var vars = {};
-    var streams = [];
-
-    curBlocks.forEach(function(curBlock) {
-        var data = curBlock.block.data;
-
-        $.extend(requires, data.requires);
-
-        for (var name in data.vars) {
-            vars[name] = Handlebars.compile(data.vars[name])(curBlock.args);
-        }
-
-        streams.push({
-            name: curBlock.name,
-            code: Handlebars.compile(data.stream)(curBlock.args)
-        });
-    });
-
-    var code = [];
-
-    for (var name in requires) {
-        code.push("var " + name + " = " + requires[name] + ";");
-    }
-
-    code.push("");
-
-    for (var name in vars) {
-        code.push("var " + name + " = " + vars[name] + ";");
-    }
-
-    code.push("");
-
-    for (var i = 0; i < streams.length; i++) {
-        var stream = streams[i];
-        var streamCode = stream.code;
-        var piped = streamCode;
-
-        if (i > 0) {
-            piped = ".pipe(" + streamCode + ")";
-            piped = piped.replace(/(^|\n)/g, "$1    ");
-        }
-
-        code.push((i > 0 ? "    " : "") + "// " + stream.name);
-
-        if (i === streams.length - 1) {
-            piped += ";";
-        }
-
-        code.push(piped);
-    }
-
-    return code.join("\n");
-};
-
 var updateDisplay = function() {
-    $("#output .code").text(renderCode());
+    $("#output .code").text(renderCode(curBlocks));
 
     if (curBlocks.length === 0) {
         $(".block").each(function() {
@@ -98,7 +42,39 @@ var updateDisplay = function() {
     }
 };
 
+var runCode = function() {
+    $.ajax({
+        url: "/",
+        type: "POST",
+        dataType: "json",
+        data: {
+            blocks: JSON.stringify(curBlocks.map(function(curBlock) {
+                return {
+                    name: curBlock.name,
+                    args: curBlock.args
+                }
+            }))
+        },
+        success: function(log) {
+            var logTmpl = Handlebars.compile($("#log-tmpl").html());
+            $("#log").html(logTmpl({
+                log: log.map(function(item) {
+                    item.data = typeof item.data === "object" ?
+                        JSON.stringify(item.data) :
+                        item.data;
+                    return item;
+                })
+            }));
+        },
+        error: function() {
+            $("#log").html("Error.");
+        }
+    });
+};
+
 $(document).on("submit", "#output form", function() {
+    runCode();
+
     return false;
 });
 
@@ -127,6 +103,7 @@ $(document).on("submit", "#blocks form", function() {
     curBlocks.push(curBlock);
 
     updateDisplay();
+    runCode();
 
     return false;
 });

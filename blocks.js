@@ -1,8 +1,10 @@
 module.exports = {
     Readable: {
+        /*
         "STDIN": function() {
             return process.stdin;
         },
+        */
 
         "Read File": function(fileName /* input/people.csv|input/people.csv.gz|input/people.json|input/people.json.gz|input/people.tsv|input/people.tsv.gz */) {
             var fs = require("fs");
@@ -16,9 +18,11 @@ module.exports = {
     },
 
     Writable: {
+        /*
         "STDOUT": function() {
             return process.stdout;
         },
+        */
 
         "Write File": function(fileName /* output/people.html|output/people.json|output/people.json.gz|output/people.csv|output/people.csv.gz|output/people.tsv|output/people.tsv.gz */) {
             var fs = require("fs");

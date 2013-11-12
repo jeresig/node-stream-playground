@@ -8,6 +8,7 @@
         </script>
         <script src="/javascripts/jquery-2.0.3.min.js"></script>
         <script src="/javascripts/handlebars.min.js"></script>
+        <script src="/javascripts/render-code.js"></script>
         <script src="/javascripts/main.js"></script>
     </head>
     <body>
@@ -26,6 +27,8 @@
                 </div>
                 </form>
             </div>
+            <h1>Output</h1>
+            <div id="log" class="wrap"></div>
         </div>
 
         <script id="blocks-tmpl" type="text/x-handlebars-template">
@@ -47,5 +50,13 @@
             <option>{{this}}</option>
         {{/each}}
         </select></script>
+        <script id="log-tmpl" type="text/x-handlebars-template">
+        {{#each log}}
+        <div class="log">
+            <div class="name">{{name}}</div>
+            <pre class="output">{{data}}</pre>
+        </div>
+        {{/each}}
+        </script>
     </body>
 </html>

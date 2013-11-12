@@ -1,4 +1,12 @@
+var fs = require("fs");
+var path = require("path");
+
+process.chdir(path.join(__dirname, '..', 'public'));
+
+var _eval = require("eval");
+
 var blocks = require("../blocks");
+var renderCode = require("../public/javascripts/render-code")
 
 var mapping = {
     Readable: {read: true, write: false, input: true},
@@ -82,39 +90,71 @@ var buildConf = function() {
     return results;
 };
 
-// Demos:
-
-/*
-streams.Readable["Read File"]("input/people.csv")
-    .pipe(streams.Duplex["Parse CSV as Object"]())
-    .pipe(streams.Duplex["Turn Into JSON Array String"]())
-    .pipe(streams.Writable["STDOUT"]())
-
-streams.Readable["Read File"]("people.json")
-    .pipe(streams.Duplex["Parse JSON"]("*"))
-    .pipe(streams.Duplex["Convert Object w/ Handlebars"]("<tr><td><a href='{{URL}}'>{{Name}}</a></td><td>{{City}}</td></tr>"))
-    .pipe(streams.Duplex["Concat Strings"]())
-    .pipe(streams.Duplex["Wrap Strings"]("<table><tr><th>Name</th><th>City</th></tr>", "</table>"))
-    .pipe(streams.Writable["Write File"]("test.html"))
-    .on("close", function() {
-        streams.End["Open File"]("test.html");
-    });
-*/
-
-/*
-streams.Readable["Read File"]("people.csv")
-    .pipe(streams.Duplex["Parse CSV as Object"]())
-    .pipe(streams.Duplex["Convert Object w/ Handlebars"]("<tr><td><a href='{{URL}}'>{{Name}}</a></td><td>{{City}}</td></tr>"))
-    .pipe(streams.Duplex["Concat Strings"]())
-    .pipe(streams.Duplex["Wrap Strings"]("<table><tr><th>Name</th><th>City</th></tr>", "</table>"))
-    .pipe(streams.Writable["Write File"]("test.html"))
-    .on("close", function() {
-        streams.End["Open File"]("test.html");
-    });
-*/
-
 exports.index = function(req, res){
     res.render('index', {
         blocks: JSON.stringify(buildConf())
     });
+};
+
+exports.runCode = function(req, res){
+    var curBlocks = JSON.parse(req.body.blocks);
+    var blocks = buildConf();
+
+    var _log = [];
+
+    var sandbox = {
+        log: function(name, args) {
+            return function(data) {
+                var file = args.url || args.fileName;
+
+                if (file && file.indexOf(".gz") < 0 || name === "Un-Gzip") {
+                    data = data.toString();
+                }
+
+                _log.push({
+                    name: name,
+                    data: data
+                });
+            };
+        },
+
+        done: function(args) {
+            return function() {
+                var file = args.url || args.fileName;
+
+                if (file && /(output\/[^\/]+)"$/.test(file)) {
+                    var fileName = RegExp.$1;
+
+                    fs.readFile(fileName, function(err, data) {
+                        sandbox.log("Output: " + file, args)(data);
+
+                        res.send(_log);
+                    });
+                } else {
+                    res.send(_log);
+                }
+            };
+        }
+    };
+
+    curBlocks.forEach(function(curBlock) {
+        var rootBlock;
+
+        blocks.forEach(function(block) {
+            if (block.name === curBlock.name) {
+                rootBlock = block;
+            }
+        });
+
+        // TODO: Verify args
+        curBlock.block = rootBlock
+    });
+
+    var code = renderCode(curBlocks, true);
+
+    try {
+        _eval(code, sandbox, true);
+    } catch(e) {
+        res.send(500, {error: "Error Evaluating Code: " + e});
+    }
 };
