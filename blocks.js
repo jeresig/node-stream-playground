@@ -89,8 +89,8 @@ module.exports = {
         },
 
         "Parse CSV as Object": function() {
-            var csv = require("csv-stream");
-            return csv.createStream({escapeChar: '"', enclosedChar: '"'});
+            var csv = require("csv-streamify");
+            return csv({objectMode: true, columns: true});
         },
 
         "Parse CSV as Array": function() {

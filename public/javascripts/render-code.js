@@ -57,11 +57,11 @@ var renderCode = function(curBlocks, log) {
 
         if (log) {
             if (!stream.io.output) {
-                code.push(indent + ".on('data', log('" + stream.name + "', " +
+                code.push(indent + ".pipe(_log('" + stream.name + "', " +
                     JSON.stringify(stream.args) + "))");
             }
             if (i === streams.length - 1) {
-                code.push(indent + ".on('close', done(" +
+                code.push(indent + ".on('close', _done(" +
                     JSON.stringify(stream.args) + "));");
             }
         }

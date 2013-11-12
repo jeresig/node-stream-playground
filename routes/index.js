@@ -1,5 +1,6 @@
 var fs = require("fs");
 var path = require("path");
+var through = require("through");
 
 process.chdir(path.join(__dirname, '..', 'public'));
 
@@ -102,23 +103,29 @@ exports.runCode = function(req, res){
 
     var _log = [];
 
+    var _queueLog = function(name, args, data) {
+        var file = args.url || args.fileName;
+
+        if (file && file.indexOf(".gz") < 0 || name === "Un-Gzip") {
+            data = data.toString();
+        }
+
+        _log.push({
+            name: name,
+            data: data
+        });
+    };
+
     var sandbox = {
-        log: function(name, args) {
-            return function(data) {
-                var file = args.url || args.fileName;
+        _log: function(name, args) {
+            return through(function(data) {
+                _queueLog(name, args, data);
 
-                if (file && file.indexOf(".gz") < 0 || name === "Un-Gzip") {
-                    data = data.toString();
-                }
-
-                _log.push({
-                    name: name,
-                    data: data
-                });
-            };
+                this.queue(data);
+            });
         },
 
-        done: function(args) {
+        _done: function(args) {
             return function() {
                 var file = args.url || args.fileName;
 
@@ -126,7 +133,7 @@ exports.runCode = function(req, res){
                     var fileName = RegExp.$1;
 
                     fs.readFile(fileName, function(err, data) {
-                        sandbox.log("Output: " + file, args)(data);
+                        _queueLog("Output: " + file, args, data);
 
                         res.send(_log);
                     });
