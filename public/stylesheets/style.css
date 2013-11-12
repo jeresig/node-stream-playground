@@ -2,7 +2,9 @@ body {
     padding: 1%;
     margin: 0;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background: #999;
+    background: url('/images/background.jpg');
+    background-size: 100% 100%;
+    background-attachment: fixed;
 }
 
 a {
@@ -10,12 +12,38 @@ a {
 }
 
 h1 {
-    font-size: 20px;
+    font-size: 30px;
     margin: 0;
 }
 
+.header {
+    width: 75%;
+    position: relative;
+}
+
+.header .actions {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.depth {
+    display: block;
+    position: relative;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+.depth:before, .depth:after {
+    content: attr(title);
+    color: rgba(255,255,255,.1);
+    position: absolute;
+}
+
+.depth:before { top: 1px; left: 1px }
+.depth:after  { top: 2px; left: 2px }
+
 .block {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.7);
     color: #000;
     min-height: 60px;
     width: 75%;
@@ -23,6 +51,8 @@ h1 {
     padding: 1%;
     overflow: auto;
     position: relative;
+    box-shadow: 0px 0px 10px #000;
+    border-radius: 4px;
 }
 
 .block.hidden {
@@ -40,10 +70,18 @@ h1 {
     right: 1%;
 }
 
-.code {
-    font-family: Consola, Courier New;
+.log .name {
     font-size: 14px;
-    margin: 0;
+    margin-top: 5px
+}
+
+.code {
+    font-family: Consolas, Courier New;
+    font-size: 14px;
+    margin: 10px 0 0 0;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    overflow: auto;
 }
 
 div.arg {
@@ -53,15 +91,20 @@ div.arg {
 #output {
     position: fixed;
     top: 1%;
-    right: -60%;
-    width: 75%;
-    max-height: 98%;
+    right: -500px;
+    width: 600px;
+    max-height: 94%;
     overflow: auto;
     display: none;
     -moz-transition: right 0.5s;
     -webkit-transition: right 0.5s;
     -o-transition: right 0.5s;
     transition: right 0.5s;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    padding: 1%;
+    box-shadow: 0px 0px 10px #000;
+    border-radius: 4px;
 }
 
 #output:hover, #output.active {
@@ -69,10 +112,7 @@ div.arg {
 }
 
 #output .wrap {
-    background: rgba(255, 255, 255, 0.9);
-    color: #000;
-    margin-top: 10px;
-    padding: 1%;
+    margin-bottom: 10px;
 }
 
 #output .buttons {

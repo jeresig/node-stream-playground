@@ -130,7 +130,7 @@ module.exports = {
             var sprintf = require("sprintf");
             var es = require("event-stream");
             return es.mapSync(function(data) {
-                return sprintf.vsprintf(format, data);
+                return sprintf.sprintf(format, data);
             });
         }
     }

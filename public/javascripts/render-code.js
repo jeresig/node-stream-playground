@@ -67,7 +67,7 @@ var renderCode = function(curBlocks, log) {
         }
     }
 
-    return code.join("\n");
+    return code.join("\n").replace(/^\s+/, "").replace(/\n{3}/g, "\n\n");
 };
 
 if (typeof module !== "undefined") {

@@ -12,29 +12,34 @@
         <script src="/javascripts/main.js"></script>
     </head>
     <body>
-        <h1>Lego Streams</h1>
+        <div class="header">
+            <h1 class="depth" title="Lego Streams">Lego Streams</h1>
+
+            <div class="actions">
+                <form action="">
+                <input type="submit" value="Run Code"/>
+                <input type="reset" value="Reset Blocks"/>
+                </form>
+            </div>
+        </div>
 
         <div id="blocks"></div>
 
         <div id="output">
-            <h1>Stream Code</h1>
+            <h1 class="depth" title="Stream Code">Stream Code</h1>
             <div class="wrap">
-                <form action="">
                 <pre class="code"></pre>
                 <div class="buttons">
-                    <input type="submit" value="Run Code"/>
-                    <input type="reset" value="Reset Blocks"/>
                 </div>
-                </form>
             </div>
-            <h1>Output</h1>
+            <h1 class="depth" title="Output">Output</h1>
             <div id="log" class="wrap"></div>
         </div>
 
         <script id="blocks-tmpl" type="text/x-handlebars-template">
         {{#each blocks}}
         <div class="block{{#each io}}{{#if this}} {{@key}}{{/if}}{{/each}}">
-            <div class="name">{{name}}</div>
+            <div class="name depth" title="{{name}}">{{name}}</div>
             <div class="options">
                 <form action="">
                     <input type="hidden" name="name" value="{{name}}"/>
@@ -53,8 +58,8 @@
         <script id="log-tmpl" type="text/x-handlebars-template">
         {{#each log}}
         <div class="log">
-            <div class="name">{{name}}</div>
-            <pre class="output">{{data}}</pre>
+            <div class="name depth" title="{{name}}">{{name}}</div>
+            <pre class="output code">{{data}}</pre>
         </div>
         {{/each}}
         </script>

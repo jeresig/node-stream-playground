@@ -1,13 +1,14 @@
 var fs = require("fs");
 var path = require("path");
+var domain = require("domain");
+
 var through = require("through");
-
-process.chdir(path.join(__dirname, '..', 'public'));
-
 var _eval = require("eval");
 
 var blocks = require("../blocks");
 var renderCode = require("../public/javascripts/render-code")
+
+process.chdir(path.join(__dirname, '..', 'public'));
 
 var mapping = {
     Readable: {read: true, write: false, input: true},
@@ -98,9 +99,6 @@ exports.index = function(req, res){
 };
 
 exports.runCode = function(req, res){
-    var curBlocks = JSON.parse(req.body.blocks);
-    var blocks = buildConf();
-
     var _log = [];
 
     var _queueLog = function(name, args, data) {
@@ -144,24 +142,32 @@ exports.runCode = function(req, res){
         }
     };
 
-    curBlocks.forEach(function(curBlock) {
-        var rootBlock;
+    var evalDomain = domain.create();
 
-        blocks.forEach(function(block) {
-            if (block.name === curBlock.name) {
-                rootBlock = block;
-            }
-        });
-
-        // TODO: Verify args
-        curBlock.block = rootBlock
+    evalDomain.on("error", function(err) {
+        _queueLog("Error", {}, err.toString());
+        res.send(_log);
     });
 
-    var code = renderCode(curBlocks, true);
+    evalDomain.run(function() {
+        var curBlocks = JSON.parse(req.body.blocks);
+        var blocks = buildConf();
 
-    try {
+        curBlocks.forEach(function(curBlock) {
+            var rootBlock;
+
+            blocks.forEach(function(block) {
+                if (block.name === curBlock.name) {
+                    rootBlock = block;
+                }
+            });
+
+            // TODO: Verify args
+            curBlock.block = rootBlock
+        });
+
+        var code = renderCode(curBlocks, true);
+
         _eval(code, sandbox, true);
-    } catch(e) {
-        res.send(500, {error: "Error Evaluating Code: " + e});
-    }
+    });
 };

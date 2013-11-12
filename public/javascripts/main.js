@@ -57,6 +57,7 @@ var runCode = function() {
         },
         success: function(log) {
             var logTmpl = Handlebars.compile($("#log-tmpl").html());
+
             $("#log").html(logTmpl({
                 log: log.map(function(item) {
                     item.data = typeof item.data === "object" ?
@@ -65,6 +66,9 @@ var runCode = function() {
                     return item;
                 })
             }));
+
+            // Scroll to the bottom of the results.
+            $("#output").scrollTop($("#output").prop("scrollHeight"));
         },
         error: function() {
             $("#log").html("Error.");
@@ -72,13 +76,13 @@ var runCode = function() {
     });
 };
 
-$(document).on("submit", "#output form", function() {
+$(document).on("submit", ".actions form", function() {
     runCode();
 
     return false;
 });
 
-$(document).on("reset", "#output form", function() {
+$(document).on("reset", ".actions form", function() {
     curBlocks = [];
     updateDisplay();
     return false;
