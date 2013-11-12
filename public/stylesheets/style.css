@@ -1,23 +1,28 @@
 body {
-  padding: 50px;
-  margin: 0;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background: #999;
+    padding: 1%;
+    margin: 0;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background: #999;
 }
 
 a {
-  color: #00B7FF;
+    color: #00B7FF;
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0;
 }
 
 .block {
-    border: 1px solid #000;
-    background: #FFF;
+    background: rgba(255, 255, 255, 0.5);
     color: #000;
     min-height: 60px;
-    width: 500px;
-    margin: 20px 0;
-    padding: 10px;
+    width: 75%;
+    margin: 10px 0;
+    padding: 1%;
     overflow: auto;
+    position: relative;
 }
 
 .block.hidden {
@@ -29,9 +34,16 @@ a {
     font-weight: bold;
 }
 
+.block .submit {
+    position: absolute;
+    top: 1%;
+    right: 1%;
+}
+
 .code {
     font-family: Consola, Courier New;
     font-size: 14px;
+    margin: 0;
 }
 
 div.arg {
@@ -40,14 +52,30 @@ div.arg {
 
 #output {
     position: fixed;
-    top: 50px;
-    right: 50px;
-    width: 500px;
+    top: 1%;
+    right: -60%;
+    width: 75%;
     overflow: auto;
+    display: none;
+    -moz-transition: right 0.5s;
+    -webkit-transition: right 0.5s;
+    -o-transition: right 0.5s;
+    transition: right 0.5s;
+}
+
+#output:hover, #output.active {
+    right: 0;
 }
 
 #output .wrap {
-    border: 1px solid #000;
-    background: #FFF;
+    background: rgba(255, 255, 255, 0.9);
     color: #000;
+    margin-top: 10px;
+    padding: 1%;
+}
+
+#output .buttons {
+    position: absolute;
+    top: 1%;
+    right: 1%;
 }

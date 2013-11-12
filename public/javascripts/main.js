@@ -76,7 +76,6 @@ var renderCode = function() {
 };
 
 var updateDisplay = function() {
-    // TODO: Show code.
     $("#output .code").text(renderCode());
 
     if (curBlocks.length === 0) {
@@ -84,17 +83,32 @@ var updateDisplay = function() {
             $(this).toggleClass("hidden", !$(this).hasClass("input"));
         });
 
+        $("#output").hide().removeClass("active");
+
     } else if (curBlocks[curBlocks.length - 1].block.io.output) {
         $(".block").addClass("hidden");
+        $("#output").show().addClass("active");
 
     } else {
         $(".block").each(function() {
             $(this).toggleClass("hidden", !!$(this).hasClass("input"));
         });
+
+        $("#output").show();
     }
 };
 
-$(document).on("submit", "form", function() {
+$(document).on("submit", "#output form", function() {
+    return false;
+});
+
+$(document).on("reset", "#output form", function() {
+    curBlocks = [];
+    updateDisplay();
+    return false;
+});
+
+$(document).on("submit", "#blocks form", function() {
     var curBlock = {
         name: $(this).find("[name=name]").val(),
         args: {}

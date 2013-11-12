@@ -11,7 +11,7 @@ module.exports = {
 
         "HTTP GET Request": function(url /* http://localhost:8945/input/people.csv|http://localhost:8945/input/people.csv.gz|http://localhost:8945/input/people.json|http://localhost:8945/input/people.json.gz|http://localhost:8945/input/people.tsv|http://localhost:8945/input/people.tsv.gz */) {
             var request = require("request");
-            return request.get(url);
+            return request(url);
         }
     },
 
