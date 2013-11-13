@@ -1,1 +1,4 @@
 node_modules
+naught.ipc
+npm-debug.log
+logs

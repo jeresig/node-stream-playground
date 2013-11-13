@@ -5,7 +5,7 @@
   "main": "lego-streams.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production naught start --worker-count 2 --log logs/naught.log --stdout logs/stdout.log --stderr logs/stderr.log app.js",
+    "start": "NODE_ENV=production naught start --worker-count 1 --log logs/naught.log --stdout logs/stdout.log --stderr logs/stderr.log app.js",
     "restart": "NODE_ENV=production naught deploy"
   },
   "author": "John Resig <jeresig@gmail.com",
