@@ -3,15 +3,28 @@ var curBlocks = [];
 $(function() {
     var blocksTmpl = Handlebars.compile($("#blocks-tmpl").html());
     var argTmpl = Handlebars.compile($("#arg-tmpl").html());
+    var colorCount = 0;
 
     BLOCKS.forEach(function(block) {
-        var args = {};
-
-        block.data.args.forEach(function(arg) {
-            args[arg.name] = argTmpl(arg);
+        var code = block.data.code.replace(/{{{(\w+)}}}/g, function(all, name) {
+            return "__" + name + "__";
         });
 
-        block.html = Handlebars.compile(block.data.code)(args);
+        var pretty = prettyCode(code);
+
+        code = pretty.replace(/(require.*?>")([^"]+)/g, function(all, pre, name) {
+            if (name !== "fs" && name !== "child_process" && name !== "zlib") {
+                return pre + "<a href='http://npmjs.org/package/" + name +
+                    "' target=_blank>" + name + "</a>";
+            }
+            return all;
+        });
+
+        block.data.args.forEach(function(arg) {
+            code = code.replace("__" + arg.name + "__", argTmpl(arg));
+        });
+
+        block.html = code;
     });
 
     $("#blocks").html(blocksTmpl({blocks: BLOCKS}));
@@ -19,15 +32,19 @@ $(function() {
     updateDisplay();
 });
 
+var prettyCode = function(code) {
+    return Prism.highlight(code, Prism.languages.javascript, "javascript");
+};
+
 var updateDisplay = function() {
-    $("#output .code").text(renderCode(curBlocks));
+    $("#output .stream-code").html(prettyCode(renderCode(curBlocks)));
 
     if (curBlocks.length === 0) {
         $(".block").each(function() {
             $(this).toggleClass("hidden", !$(this).hasClass("input"));
         });
 
-        $("#output").hide().removeClass("active");
+        $("#output, .actions").hide().removeClass("active");
 
     } else if (curBlocks[curBlocks.length - 1].block.io.output) {
         $(".block").addClass("hidden");
@@ -38,11 +55,11 @@ var updateDisplay = function() {
             $(this).toggleClass("hidden", !!$(this).hasClass("input"));
         });
 
-        $("#output").show();
+        $("#output, .actions").show();
     }
 };
 
-var runCode = function() {
+var runCode = function(noScroll) {
     $.ajax({
         url: "/",
         type: "POST",
@@ -63,21 +80,35 @@ var runCode = function() {
                     item.data = typeof item.data === "object" ?
                         JSON.stringify(item.data) :
                         item.data;
+
+                    if (item.data.indexOf("{") === 0 ||
+                            item.data.indexOf("[") === 0) {
+                        item.data = prettyCode(item.data);
+                    }
+
                     return item;
                 })
             }));
 
-            // Scroll to the bottom of the results.
-            $("#output").scrollTop($("#output").prop("scrollHeight"));
+            if (!noScroll) {
+                // Scroll to the bottom of the results.
+                $("#output").scrollTop($("#output").prop("scrollHeight"));
+            }
         },
         error: function() {
-            $("#log").html("Error.");
+            $("#log").html("<pre class='code'>Error.</code>");
         }
     });
 };
 
 $(document).on("submit", ".actions form", function() {
-    runCode();
+    curBlocks.pop();
+    
+    updateDisplay();
+
+    if (curBlocks.length > 0) {
+        runCode(true);
+    }
 
     return false;
 });

@@ -16,6 +16,10 @@ h1 {
     margin: 0;
 }
 
+button::-moz-focus-inner {
+    border: 0;
+}
+
 .header {
     width: 75%;
     position: relative;
@@ -48,7 +52,7 @@ h1 {
     min-height: 60px;
     width: 75%;
     margin: 10px 0;
-    padding: 1%;
+    padding: 7px;
     overflow: auto;
     position: relative;
     box-shadow: 0px 0px 10px #000;
@@ -66,8 +70,8 @@ h1 {
 
 .block .submit {
     position: absolute;
-    top: 1%;
-    right: 1%;
+    top: 7px;
+    right: 7px;
 }
 
 .log .name {
@@ -100,9 +104,9 @@ div.arg {
     -webkit-transition: right 0.5s;
     -o-transition: right 0.5s;
     transition: right 0.5s;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.7);
     color: #000;
-    padding: 1%;
+    padding: 7px 7px 0 7px;
     box-shadow: 0px 0px 10px #000;
     border-radius: 4px;
 }
@@ -111,12 +115,24 @@ div.arg {
     right: 0;
 }
 
+#output .code {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+#output .depth {
+    color: #FFF;
+}
+
+#output .depth:before, #output .depth:before {
+    color: rgba(0,0,0,.1);
+}
+
 #output .wrap {
     margin-bottom: 10px;
 }
 
 #output .buttons {
     position: absolute;
-    top: 1%;
-    right: 1%;
+    top: 11px;
+    right: 7px;
 }

@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Lego Streams</title>
+        <title>Node.js Stream Playground</title>
         <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="stylesheet" href="/stylesheets/gh-buttons.css" />
+        <link rel="stylesheet" href="/stylesheets/prism.css" />
         <script>
         var BLOCKS = <%- blocks %>;
         </script>
         <script src="/javascripts/jquery-2.0.3.min.js"></script>
         <script src="/javascripts/handlebars.min.js"></script>
+        <script src="/javascripts/prism.js"></script>
         <script src="/javascripts/render-code.js"></script>
         <script src="/javascripts/main.js"></script>
     </head>
     <body>
         <div class="header">
-            <h1 class="depth" title="Lego Streams">Lego Streams</h1>
-
-            <div class="actions">
-                <form action="">
-                <input type="submit" value="Run Code"/>
-                <input type="reset" value="Reset Blocks"/>
-                </form>
-            </div>
+            <h1 class="depth" title="Node.js Stream Playground">Node.js Stream Playground</h1>
         </div>
 
         <div id="blocks"></div>
 
         <div id="output">
-            <h1 class="depth" title="Stream Code">Stream Code</h1>
+            <h1 class="depth" title="Node.js Code">Node.js Code</h1>
             <div class="wrap">
-                <pre class="code"></pre>
+                <pre class="code stream-code"></pre>
                 <div class="buttons">
+                    <div class="actions">
+                        <form action="">
+                            <button class="button icon remove" type="submit">Remove Last Stream</button>
+                            <button class="button icon loop" type="reset">Reset Streams</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <h1 class="depth" title="Output">Output</h1>
+            <h1 class="depth" title="Stream Output">Stream Output</h1>
             <div id="log" class="wrap"></div>
         </div>
 
@@ -44,7 +46,7 @@
                 <form action="">
                     <input type="hidden" name="name" value="{{name}}"/>
                     <pre class="code">{{{html}}}</pre>
-                    <input type="submit" class="submit" value="Add Block"/>
+                    <button type="submit" class="submit button icon add">Add Block</button>
                 </form>
             </div>
         </div>
@@ -59,7 +61,7 @@
         {{#each log}}
         <div class="log">
             <div class="name depth" title="{{name}}">{{name}}</div>
-            <pre class="output code">{{data}}</pre>
+            <pre class="output code">{{{data}}}</pre>
         </div>
         {{/each}}
         </script>

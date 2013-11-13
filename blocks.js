@@ -1,29 +1,17 @@
 module.exports = {
     Readable: {
-        /*
-        "STDIN": function() {
-            return process.stdin;
-        },
-        */
-
-        "Read File": function(fileName /* input/people.csv|input/people.csv.gz|input/people.json|input/people.json.gz|input/people.tsv|input/people.tsv.gz */) {
+        "Read File": function(fileName /* input/people.csv|input/people.csv.gz|input/people_utf8.csv|input/people_euc-jp.csv|input/people_euc-jp.csv.gz|input/people.json|input/people.json.gz|input/people.tsv|input/people.tsv.gz */) {
             var fs = require("fs");
             return fs.createReadStream(fileName);
         },
 
-        "HTTP GET Request": function(url /* http://localhost:8945/input/people.csv|http://localhost:8945/input/people.csv.gz|http://localhost:8945/input/people.json|http://localhost:8945/input/people.json.gz|http://localhost:8945/input/people.tsv|http://localhost:8945/input/people.tsv.gz */) {
+        "HTTP GET Request": function(url /* http://localhost:8945/input/people.csv|http://localhost:8945/input/people.csv.gz|http://localhost:8945/input/people_utf8.csv|http://localhost:8945/input/people_euc-jp.csv|http://localhost:8945/input/people_euc-jp.csv.gz|http://localhost:8945/input/people.json|http://localhost:8945/input/people.json.gz|http://localhost:8945/input/people.tsv|http://localhost:8945/input/people.tsv.gz */) {
             var request = require("request");
             return request(url);
         }
     },
 
     Writable: {
-        /*
-        "STDOUT": function() {
-            return process.stdout;
-        },
-        */
-
         "Write File": function(fileName /* output/people.html|output/people.json|output/people.json.gz|output/people.csv|output/people.csv.gz|output/people.tsv|output/people.tsv.gz */) {
             var fs = require("fs");
             return fs.createWriteStream(fileName);
@@ -32,6 +20,16 @@ module.exports = {
         "HTTP PUT Request": function(url /* http://localhost:8945/output/people.html|http://localhost:8945/output/people.json|http://localhost:8945/output/people.json.gz|http://localhost:8945/output/people.csv|http://localhost:8945/output/people.csv.gz|http://localhost:8945/output/people.tsv|http://localhost:8945/output/people.tsv.gz */) {
             var request = require("request");
             return request.put(url);
+        },
+
+        "Insert HTML": function(inFile /* input/people_table_tmpl.html|input/people_ul_tmpl.html */, fileName /* output/people.html */, selector /* tbody|ul */) {
+            var fs = require("fs");
+            var trumpet = require("trumpet");
+            var tr = trumpet();
+            var trOut = fs.createReadStream(inFile)
+                .pipe(tr)
+                .pipe(fs.createWriteStream(fileName));
+            return tr.select(selector).createWriteStream();
         }
     },
 
@@ -66,12 +64,12 @@ module.exports = {
             return es.replace(from, to);
         },
 
-        "Split Strings": function(separator) {
+        "Split Strings": function(separator /* , */) {
             var es = require("event-stream");
             return es.split(separator);
         },
 
-        "Join Strings": function(separator) {
+        "Join Strings": function(separator /* , */) {
             var es = require("event-stream");
             return es.join(separator);
         },
@@ -81,7 +79,7 @@ module.exports = {
             return es.wait();
         },
 
-        "Wrap Strings": function(start /* <table>|<table><tr><th>Name</th><th>City</th></tr> */, end /* </table> */) {
+        "Wrap Strings": function(start /* <table>|<table><tr><th>Name</th><th>City</th></tr>|<ul> */, end /* </table>|</ul> */) {
             var es = require("event-stream");
             return es.mapSync(function(data) {
                 return start + data + end;
@@ -93,44 +91,39 @@ module.exports = {
             return csv({objectMode: true, columns: true});
         },
 
-        "Parse CSV as Array": function() {
-            // TODO: Switch to different module?
-            var csv = require("csv-stream");
-            return csv.createStream();
+        "Parse TSV as Array": function() {
+            var csv = require("csv-streamify");
+            return csv({objectMode: true, delimiter: "\t"});
         },
 
-        "Convert Object w/ Handlebars": function(source /* <tr><td><a href='{{URL}}'>{{Name}}</a></td><td>{{City}}</td></tr> */) {
+        "Filter Using Grep": function(filter /* Brooklyn|New York|San Francisco */) {
+            // You don't actually want to do it this way...
+            var cp = require("child_process");
+            var es = require("event-stream");
+            var grep = cp.exec("grep " + filter);
+            return es.duplex(grep.stdin, grep.stdout);
+        },
+
+        "Convert Object w/ Handlebars": function(source /* <tr><td><a href='{{URL}}'>{{Name}}</a></td><td>{{City}}</td></tr>|<li><a href='{{URL}}'>{{Name}}</a> ({{City}})</li> */) {
             var Handlebars = require("handlebars");
             var es = require("event-stream");
             var tmpl = Handlebars.compile(source);
             return es.mapSync(tmpl);
         },
-
-        "Read HTML": function(selector /* */) {
-            var trumpet = require("trumpet");
-            var tr = trumpet();
-            return tr.selectAll(selector).createReadStream();
-        },
-
-        "Insert HTML": function(selector /* */) {
-            var trumpet = require("trumpet");
-            var tr = trumpet();
-            return tr.selectAll(selector).createWriteStream();
-        },
-
-        // Remove?
-        "Grep": function() {
-            var cp = require("child_process");
-            var es = require("event-stream");
-            var grep = cp.exec("grep Stream");
-            return es.duplex(grep.stdin, grep.stdout);
-        },
-
-        "Sprintf": function(format /* <tr><td><a href='%(URL)s'>%(Name)s</a></td><td>%(City)s</td></tr>|<tr><td><a href='%2$s'>%1$s</a></td><td>%3$s</td></tr> */) {
-            var sprintf = require("sprintf");
+        
+        "Convert Array w/ Sprintf": function(format /* <tr><td><a href='%2$s'>%1$s</a></td><td>%3$s</td></tr>|<li><a href='%2$s'>%1$s</a> (%3$s)</li> */) {
+            var vsprintf = require("sprintf").vsprintf;
             var es = require("event-stream");
             return es.mapSync(function(data) {
-                return sprintf.sprintf(format, data);
+                return vsprintf(format, data);
+            });
+        },
+
+        "Convert Object w/ Sprintf": function(format /* <tr><td><a href='%(URL)s'>%(Name)s</a></td><td>%(City)s</td></tr>|<li><a href='%(URL)s'>%(Name)s</a> (%(City)s)</li> */) {
+            var sprintf = require("sprintf").sprintf;
+            var es = require("event-stream");
+            return es.mapSync(function(data) {
+                return sprintf(format, data);
             });
         }
     }
