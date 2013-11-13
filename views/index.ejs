@@ -17,6 +17,8 @@
     <body>
         <div class="header">
             <h1 class="depth" title="Node.js Stream Playground">Node.js Stream Playground</h1>
+            <div class="credits">Created by <a href="http://ejohn.org/" target=_blank>John Resig</a>, MIT Licensed.<br/>
+            Source code on Github: <a href="https://github.com/jeresig/node-stream-playground">node-stream-playground</a></div>
         </div>
 
         <div id="blocks"></div>
@@ -41,7 +43,7 @@
         <script id="blocks-tmpl" type="text/x-handlebars-template">
         {{#each blocks}}
         <div class="block{{#each io}}{{#if this}} {{@key}}{{/if}}{{/each}}">
-            <div class="name depth" title="{{name}}">{{name}}</div>
+            <div class="name">{{name}}</div>
             <div class="options">
                 <form action="">
                     <input type="hidden" name="name" value="{{name}}"/>
@@ -54,13 +56,13 @@
         </script>
         <script id="arg-tmpl" type="text/x-handlebars-template"><select class="arg" name="{{name}}">
         {{#each values}}
-            <option>{{this}}</option>
+            <option value="{{value}}">{{display}}</option>
         {{/each}}
         </select></script>
         <script id="log-tmpl" type="text/x-handlebars-template">
         {{#each log}}
         <div class="log">
-            <div class="name depth" title="{{name}}">{{name}}</div>
+            <div class="name">{{{name}}}</div>
             <pre class="output code">{{{data}}}</pre>
         </div>
         {{/each}}

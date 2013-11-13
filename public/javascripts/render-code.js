@@ -53,6 +53,13 @@ var renderCode = function(curBlocks, log) {
             piped += ";";
         }
 
+        if (log) {
+            // We don't actually want to support PUT-ing (for security reasons)
+            // so we just hack around it.
+            piped = piped.replace(/request\.put.*?output/g,
+                "require('fs').createWriteStream(\"output")
+        }
+
         code.push(piped);
 
         if (log) {

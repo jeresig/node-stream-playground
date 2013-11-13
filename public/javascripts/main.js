@@ -10,17 +10,15 @@ $(function() {
             return "__" + name + "__";
         });
 
-        var pretty = prettyCode(code);
-
-        code = pretty.replace(/(require.*?>")([^"]+)/g, function(all, pre, name) {
-            if (name !== "fs" && name !== "child_process" && name !== "zlib") {
-                return pre + "<a href='http://npmjs.org/package/" + name +
-                    "' target=_blank>" + name + "</a>";
-            }
-            return all;
-        });
+        var code = prettyCode(code);
 
         block.data.args.forEach(function(arg) {
+            arg.values = arg.values.map(function(value) {
+                return {
+                    value: value,
+                    display: replaceURLs(value)
+                };
+            });
             code = code.replace("__" + arg.name + "__", argTmpl(arg));
         });
 
@@ -32,12 +30,45 @@ $(function() {
     updateDisplay();
 });
 
+var replaceURLs = function(str) {
+    return str.replace(/localhost:\d+/g, window.location.host);
+};
+
+var markupURLs = function(str) {
+    return str.replace(/((?:http|input\/)[^", ]+)/g,
+        "<a href='$1' target=_blank>$1</a>");
+};
+
 var prettyCode = function(code) {
-    return Prism.highlight(code, Prism.languages.javascript, "javascript");
+    code = prettyNonCode(code);
+
+    // Syntax highlight
+    code = Prism.highlight(code, Prism.languages.javascript, "javascript");
+
+    // Insert in handy NPM links
+    return code.replace(/(require.*?>")([^"]+)/g, function(all, pre, name) {
+        if (name !== "fs" && name !== "child_process" && name !== "zlib") {
+            return pre + "<a href='http://npmjs.org/package/" + name +
+                "' target=_blank>" + name + "</a>";
+        }
+        return all;
+    });
+};
+
+var prettyNonCode = function(str) {
+    // Escape HTML
+    str = $("<div>").text(str).html();
+
+    // Fix up inline URLs
+    str = replaceURLs(str);
+
+    // Mark up http links
+    return markupURLs(str);
 };
 
 var updateDisplay = function() {
     $("#output .stream-code").html(prettyCode(renderCode(curBlocks)));
+    $("#log").html("<pre class='code'>Waiting for code to run...</code>");
 
     if (curBlocks.length === 0) {
         $(".block").each(function() {
@@ -77,6 +108,8 @@ var runCode = function(noScroll) {
 
             $("#log").html(logTmpl({
                 log: log.map(function(item) {
+                    item.name = prettyNonCode(item.name);
+
                     item.data = typeof item.data === "object" ?
                         JSON.stringify(item.data) :
                         item.data;
@@ -84,6 +117,8 @@ var runCode = function(noScroll) {
                     if (item.data.indexOf("{") === 0 ||
                             item.data.indexOf("[") === 0) {
                         item.data = prettyCode(item.data);
+                    } else {
+                        item.data = prettyNonCode(item.data);
                     }
 
                     return item;
@@ -96,14 +131,14 @@ var runCode = function(noScroll) {
             }
         },
         error: function() {
-            $("#log").html("<pre class='code'>Error.</code>");
+            $("#log").html("<pre class='code'>Error running code.</code>");
         }
     });
 };
 
 $(document).on("submit", ".actions form", function() {
     curBlocks.pop();
-    
+
     updateDisplay();
 
     if (curBlocks.length > 0) {
@@ -120,6 +155,10 @@ $(document).on("reset", ".actions form", function() {
 });
 
 $(document).on("submit", "#blocks form", function() {
+    if ($(this).parents(".block").hasClass("hidden")) {
+        return false;
+    }
+
     var curBlock = {
         name: $(this).find("[name=name]").val(),
         args: {}

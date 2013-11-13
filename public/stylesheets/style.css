@@ -1,7 +1,8 @@
 body {
-    padding: 1%;
+    padding: 7px;
     margin: 0;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    /* Background from: http://dribbble.com/shots/1223522-Blurred-Backgrounds */
     background: url('/images/background.jpg');
     background-size: 100% 100%;
     background-attachment: fixed;
@@ -16,20 +17,25 @@ h1 {
     margin: 0;
 }
 
-button::-moz-focus-inner {
-    border: 0;
-}
-
 .header {
-    width: 75%;
     position: relative;
 }
 
-.header .actions {
+.header .credits {
+    color: #666;
+    font-size: 10px;
+    width: 400px;
     position: absolute;
     top: 0px;
     right: 0px;
+    text-align: right;
 }
+
+.header .credits a {
+    color: #000;
+}
+
+/* Depth Effect From: http://dabblet.com/gist/1609945 */
 
 .depth {
     display: block;
@@ -43,8 +49,15 @@ button::-moz-focus-inner {
     position: absolute;
 }
 
-.depth:before { top: 1px; left: 1px }
-.depth:after  { top: 2px; left: 2px }
+.depth:before {
+    top: 1px;
+    left: 1px
+}
+
+.depth:after {
+    top: 2px;
+    left: 2px
+}
 
 .block {
     background: rgba(255, 255, 255, 0.7);
@@ -60,7 +73,7 @@ button::-moz-focus-inner {
 }
 
 .block.hidden {
-    display: none;
+    opacity: 0.1;
 }
 
 .block .name, .log .name {
@@ -88,6 +101,10 @@ button::-moz-focus-inner {
     overflow: auto;
 }
 
+.code a {
+    color: #2F9C0A;
+}
+
 div.arg {
     padding: 5px 10px;
 }
@@ -100,26 +117,31 @@ div.arg {
     max-height: 94%;
     overflow: auto;
     display: none;
-    -moz-transition: right 0.5s;
-    -webkit-transition: right 0.5s;
-    -o-transition: right 0.5s;
-    transition: right 0.5s;
+    -moz-transition: right 0.3s;
+    -webkit-transition: right 0.3s;
+    -o-transition: right 0.3s;
+    transition: right 0.3s;
     background: rgba(0, 0, 0, 0.7);
     color: #000;
     padding: 7px 7px 0 7px;
     box-shadow: 0px 0px 10px #000;
-    border-radius: 4px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
 }
 
 #output:hover, #output.active {
     right: 0;
 }
 
+#output h1 {
+    font-size: 20px;
+}
+
 #output .code {
     background: rgba(255, 255, 255, 0.9);
 }
 
-#output .depth {
+#output .depth, #output .name, #output .name a {
     color: #FFF;
 }
 
@@ -133,6 +155,32 @@ div.arg {
 
 #output .buttons {
     position: absolute;
-    top: 11px;
+    top: 7px;
     right: 7px;
+}
+
+@media only screen and (min-width: 1050px) {
+    #blocks {
+        float: left;
+        width: 48%;
+    }
+
+    .block {
+        width: 100%;
+    }
+
+    #output {
+        margin-top: 10px;
+        left: 3%;
+        top: 0;
+        right: 0;
+        width: 48%;
+        padding-right: 0.5%;
+        padding-left: 0.5%;
+        position: relative;
+    }
+
+    #output:hover, #output.active {
+        right: 0;
+    }
 }

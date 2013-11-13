@@ -1,7 +1,7 @@
 {
-  "name": "lego-streams",
+  "name": "stream-playground",
   "version": "0.0.0",
-  "description": "",
+  "description": "Explore Node.js streams with an interactive playground.",
   "main": "lego-streams.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

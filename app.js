@@ -4,14 +4,19 @@
  */
 
 var express = require("express");
-var routes = require("./routes");
 var http = require("http");
 var path = require("path");
 
 var app = express();
 
+var settings = {
+    port: process.env.PORT || 8945
+};
+
+var routes = require("./routes")(settings);
+
 // all environments
-app.set("port", process.env.PORT || 8945);
+app.set("port", settings.port);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.favicon());

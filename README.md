@@ -1,9 +1,10 @@
-lego-streams
+Node.js Stream Playground
 ============
 
-A demonstration of how Node streams can be snapped together like Lego bricks.
+Explore Node.js streams with an interactive playground.
 
-(WORK IN PROGRESS)
+Visit online:
+http://nodestreams.com/
 
 Will be demo'd at the inaugural Brooklyn.js meetup:
 http://brooklynjs.com/
