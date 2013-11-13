@@ -36,7 +36,7 @@ if ("development" == app.get("env")) {
 // Used as a piece of Express middleware
 var cache = function(hours) {
     return function(req, res, next) {
-        if (process.env.NODE_ENV === "production") {
+        if (app.get("env") === "production") {
             res.setHeader("Cache-Control", "public, max-age=" + (hours * 3600));
         }
         next();
@@ -46,6 +46,16 @@ var cache = function(hours) {
 app.get("/", cache(1), routes.index);
 app.post("/", routes.runCode);
 
-http.createServer(app).listen(app.get("port"), function(){
+process.on("message", function(message) {
+    if (message === "shutdown") {
+        process.exit(0);
+    }
+});
+
+http.createServer(app).listen(app.get("port"), function() {
+    if (process.send) {
+        process.send("online");
+    }
+
     console.log("Server listening on port " + app.get("port"));
 });
