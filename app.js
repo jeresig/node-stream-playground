@@ -32,7 +32,18 @@ if ("development" == app.get("env")) {
     app.use(express.errorHandler());
 }
 
-app.get("/", routes.index);
+// Utility method of setting the cache header on a request
+// Used as a piece of Express middleware
+var cache = function(hours) {
+    return function(req, res, next) {
+        if (process.env.NODE_ENV === "production") {
+            res.setHeader("Cache-Control", "public, max-age=" + (hours * 3600));
+        }
+        next();
+    };
+};
+
+app.get("/", cache(1), routes.index);
 app.post("/", routes.runCode);
 
 http.createServer(app).listen(app.get("port"), function(){
