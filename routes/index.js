@@ -37,7 +37,7 @@ var parseCode = function(fn) {
 
         code = code.replace(stripLeadingSpaces, "\n").trim();
 
-        var findArgs = /\s*(\w+)\s*(?:\/\*\s*(.*?)\s*\*\/)?(?:,|$)/g;
+        var findArgs = /\s*(\w+)\s*(?:\/\* (.*?) \*\/)?(?:,|$)/g;
 
         while (findArgs.exec(args)) {
             var name = RegExp.$1;

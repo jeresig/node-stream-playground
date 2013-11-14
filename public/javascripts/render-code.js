@@ -74,7 +74,9 @@ var renderCode = function(curBlocks, log) {
         }
     }
 
-    return code.join("\n").replace(/^\s+/, "").replace(/\n{3}/g, "\n\n");
+    return code.join("\n").replace(/^\s+/, "").replace(/\n{3}/g, "\n\n")
+        // Fix \t and \n usage
+        .replace(/\\\\(\w)/g, "\\$1");
 };
 
 if (typeof module !== "undefined") {

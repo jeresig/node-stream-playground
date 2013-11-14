@@ -64,12 +64,19 @@ module.exports = {
             return es.replace(from, to);
         },
 
-        "Split Strings": function(separator /* , */) {
+        "Split Strings": function(separator /* \n|\t|, */) {
             var es = require("event-stream");
             return es.split(separator);
         },
 
-        "Join Strings": function(separator /* , */) {
+        "Split Strings into Array": function(separator /* \t|,|\n */) {
+            var es = require("event-stream");
+            return es.mapSync(function(data) {
+                return data.split(separator);
+            });
+        },
+
+        "Join Strings": function(separator /* \n|\t|, */) {
             var es = require("event-stream");
             return es.join(separator);
         },
@@ -79,7 +86,7 @@ module.exports = {
             return es.wait();
         },
 
-        "Wrap Strings": function(start /* <table>|<table><tr><th>Name</th><th>City</th></tr>|<ul> */, end /* </table>|</ul> */) {
+        "Wrap Strings": function(start /* <table><tr><th>Name</th><th>City</th></tr>\n|<table>\n|<ul>|Name,URL,City\n|Name\tURL\tCity\n */, end /* \n</table>|\n</ul>| */) {
             var es = require("event-stream");
             return es.mapSync(function(data) {
                 return start + data + end;
@@ -111,7 +118,7 @@ module.exports = {
             return es.mapSync(tmpl);
         },
         
-        "Convert Array w/ Sprintf": function(format /* <tr><td><a href='%2$s'>%1$s</a></td><td>%3$s</td></tr>|<li><a href='%2$s'>%1$s</a> (%3$s)</li> */) {
+        "Convert Array w/ Sprintf": function(format /* <tr><td><a href='%2$s'>%1$s</a></td><td>%3$s</td></tr>|<li><a href='%2$s'>%1$s</a> (%3$s)</li>|%s,%s,"%s"|%s\t%s\t%s */) {
             var vsprintf = require("sprintf").vsprintf;
             var es = require("event-stream");
             return es.mapSync(function(data) {
@@ -119,7 +126,7 @@ module.exports = {
             });
         },
 
-        "Convert Object w/ Sprintf": function(format /* <tr><td><a href='%(URL)s'>%(Name)s</a></td><td>%(City)s</td></tr>|<li><a href='%(URL)s'>%(Name)s</a> (%(City)s)</li> */) {
+        "Convert Object w/ Sprintf": function(format /* <tr><td><a href='%(URL)s'>%(Name)s</a></td><td>%(City)s</td></tr>|<li><a href='%(URL)s'>%(Name)s</a> (%(City)s)</li>|%(Name)s,%(URL)s,"%(City)s"|%(Name)s\t%(URL)s\t%(City)s */) {
             var sprintf = require("sprintf").sprintf;
             var es = require("event-stream");
             return es.mapSync(function(data) {

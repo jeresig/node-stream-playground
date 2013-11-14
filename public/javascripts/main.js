@@ -27,6 +27,12 @@ $(function() {
 
     $("#blocks").html(blocksTmpl({blocks: BLOCKS}));
 
+    var $output = $("#output");
+
+    $(window).on("scroll", function() {
+        $output.toggleClass("active", document.body.scrollTop > 0);
+    });
+
     updateDisplay();
 });
 
@@ -35,7 +41,7 @@ var replaceURLs = function(str) {
 };
 
 var markupURLs = function(str) {
-    return str.replace(/((?:http|input\/)[^"', ]+)/g,
+    return str.replace(/((?:http|input\/)[^"',\s]+)/g,
         "<a href='$1' target=_blank>$1</a>");
 };
 
