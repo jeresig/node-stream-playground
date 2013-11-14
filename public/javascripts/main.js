@@ -35,7 +35,7 @@ var replaceURLs = function(str) {
 };
 
 var markupURLs = function(str) {
-    return str.replace(/((?:http|input\/)[^", ]+)/g,
+    return str.replace(/((?:http|input\/)[^"', ]+)/g,
         "<a href='$1' target=_blank>$1</a>");
 };
 
