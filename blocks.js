@@ -33,7 +33,7 @@ module.exports = {
         }
     },
 
-    Duplex: {
+    Transform: {
         "Un-Gzip": function() {
             var zlib = require("zlib");
             return zlib.createGunzip();

@@ -15,8 +15,7 @@ process.chdir(path.join(__dirname, '..', 'public'));
 var mapping = {
     Readable: {read: true, write: false, input: true},
     Writable: {read: false, write: true, output: true},
-    Duplex: {read: true, write: true},
-    End: {read: false, write: false}
+    Transform: {read: true, write: true}
 };
 
 var parseCode = function(fn) {
