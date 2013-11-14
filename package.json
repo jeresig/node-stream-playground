@@ -1,13 +1,21 @@
 {
   "name": "stream-playground",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Explore Node.js streams with an interactive playground.",
-  "main": "lego-streams.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=production naught start --worker-count 1 --log logs/naught.log --stdout logs/stdout.log --stderr logs/stderr.log app.js",
     "deploy": "NODE_ENV=production naught deploy"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jeresig/node-stream-playground.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jeresig/node-stream-playground/issues"
+  },
+  "keywords": ["stream", "streams"],
   "author": "John Resig <jeresig@gmail.com",
   "license": "MIT",
   "dependencies": {
