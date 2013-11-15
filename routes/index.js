@@ -207,7 +207,7 @@ return {
                         });
                     }
 
-                    if (curBlock.session) {
+                    if (rootBlock.io.output) {
                         outputBlock = curBlock;
                     }
                 });
