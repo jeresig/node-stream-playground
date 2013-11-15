@@ -33,7 +33,7 @@ $(function() {
     var $output = $("#output");
 
     $(window).on("scroll", function() {
-        $output.toggleClass("active", document.body.scrollTop > 0);
+        $output.toggleClass("scrolling", document.body.scrollTop > 0);
     });
 
     updateDisplay();

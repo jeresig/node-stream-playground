@@ -129,7 +129,7 @@ div.arg {
     border-bottom-left-radius: 4px;
 }
 
-#output:hover {
+#output.active, #output:hover {
     right: 0;
 }
 
@@ -179,12 +179,12 @@ div.arg {
         border-bottom-right-radius: 4px;
     }
 
-    #output.active {
+    #output.scrolling {
         top: 1%;
         right: 0.5%;
     }
 
-    #output:hover {
+    #output.active, #output:hover {
         right: 0.5%;
     }
 }
