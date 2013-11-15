@@ -1,4 +1,18 @@
 module.exports = {
+    modules: {
+        "fs": "fs",
+        "request": "request",
+        "trumpet": "trumpet",
+        "zlib": "zlib",
+        "JSONStream": "JSONStream",
+        "iconv": "iconv",
+        "es": "event-stream",
+        "csv": "csv-streamify",
+        "cp": "child_process",
+        "Handlebars": "handlebars",
+        "sprintf": "sprintf"
+    },
+
     Readable: {
         "Read File": function(fileName /* input/people.csv|input/people.csv.gz|input/people_utf8.csv|input/people_euc-jp.csv|input/people_euc-jp.csv.gz|input/people.json|input/people.json.gz|input/people.tsv|input/people.tsv.gz */) {
             var fs = require("fs");
@@ -55,8 +69,8 @@ module.exports = {
         },
 
         "Change Encoding": function(from /* EUC-JP */, to /* UTF-8 */) {
-            var Iconv = require("iconv").Iconv;
-            return new Iconv(from, to);
+            var iconv = require("iconv");
+            return new iconv.Iconv(from, to);
         },
 
         "Replace": function(from /* John */, to /* Bob */) {
@@ -119,18 +133,18 @@ module.exports = {
         },
         
         "Convert Array w/ Sprintf": function(format /* <tr><td><a href='%2$s'>%1$s</a></td><td>%3$s</td></tr>|<li><a href='%2$s'>%1$s</a> (%3$s)</li>|%s,%s,"%s"|%s\t%s\t%s */) {
-            var vsprintf = require("sprintf").vsprintf;
+            var sprintf = require("sprintf");
             var es = require("event-stream");
             return es.mapSync(function(data) {
-                return vsprintf(format, data);
+                return sprintf.vsprintf(format, data);
             });
         },
 
         "Convert Object w/ Sprintf": function(format /* <tr><td><a href='%(URL)s'>%(Name)s</a></td><td>%(City)s</td></tr>|<li><a href='%(URL)s'>%(Name)s</a> (%(City)s)</li>|%(Name)s,%(URL)s,"%(City)s"|%(Name)s\t%(URL)s\t%(City)s */) {
-            var sprintf = require("sprintf").sprintf;
+            var sprintf = require("sprintf");
             var es = require("event-stream");
             return es.mapSync(function(data) {
-                return sprintf(format, data);
+                return sprintf.sprintf(format, data);
             });
         }
     }
