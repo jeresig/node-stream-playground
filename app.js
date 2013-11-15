@@ -26,6 +26,15 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, "public")));
+app.use(function(req, res, next) {
+    res.status(404);
+
+    res.type("txt").send("File not found." + (/output/.test(req.url) ?
+        " Perhaps you haven't actually written out the data to the file yet?" :
+        ""));
+});
+
+express.static.mime.define({"text/plain": ["csv", "tsv"]});
 
 // development only
 if ("development" == app.get("env")) {

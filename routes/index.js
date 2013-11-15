@@ -131,13 +131,15 @@ return {
                 return function() {
                     var file = args.url || args.fileName;
 
-                    if (file && /(output\/[^\/]+)"$/.test(file)) {
+                    if (file && /(output\/[^"]+)"$/.test(file)) {
                         var fileName = RegExp.$1;
 
                         // Ugh. A silly hack to wory around inserting HTML with
                         // trumpet.
                         setTimeout(function() {
                             fs.readFile(fileName, function(err, data) {
+                                // Remove the session ID
+                                file = file.replace(/output\/\w+/, "output");
                                 _queueLog("Output: " + file, args, data);
 
                                 res.send(_log);
@@ -164,6 +166,13 @@ return {
                 var curBlocks = JSON.parse(req.body.blocks);
                 var blocks = buildConf();
                 var error;
+                var outputBlock;
+
+                if (curBlocks.length === 0) {
+                    error = "No streams specified.";
+                } else if (curBlocks.length > 30) {
+                    error = "Too many streams specified.";
+                }
 
                 curBlocks.forEach(function(curBlock) {
                     if (error) {
@@ -189,6 +198,7 @@ return {
 
                     for (var arg in curBlock.args) {
                         var value = JSON.parse(curBlock.args[arg]);
+
                         rootArgs.forEach(function(rootArg) {
                             if (rootArg.name === arg &&
                                     rootArg.values.indexOf(value) < 0) {
@@ -196,16 +206,36 @@ return {
                             }
                         });
                     }
+
+                    if (curBlock.session) {
+                        outputBlock = curBlock;
+                    }
                 });
 
                 if (error) {
                     throw new Error(error);
-                    return;
+
+                } else if (outputBlock) {
+                    if (/^[a-z0-9]+$/i.test(outputBlock.session)) {
+                        // Make the tmp session directory exists
+                        fs.mkdir("output/" + outputBlock.session, function() {
+                            var args = outputBlock.args;
+                            for (var arg in args) {
+                                if (arg === "url" || arg === "fileName") {
+                                    args[arg] = args[arg].replace(/output\//g,
+                                        "output/" + outputBlock.session + "/");
+                                }
+                            }
+                            _eval(renderCode(curBlocks, true), sandbox, true);
+                        });
+
+                    } else {
+                        throw new Error("Invalid session ID.");
+                    }
+
+                } else {
+                    _eval(renderCode(curBlocks, true), sandbox, true);
                 }
-
-                var code = renderCode(curBlocks, true);
-
-                _eval(code, sandbox, true);
             });
         });
     }

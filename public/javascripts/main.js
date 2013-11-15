@@ -1,5 +1,8 @@
 var curBlocks = [];
 
+// Lulz. Should be "good enough"!
+var sessionID = (new Date).getTime().toString(36);
+
 $(function() {
     var blocksTmpl = Handlebars.compile($("#blocks-tmpl").html());
     var argTmpl = Handlebars.compile($("#arg-tmpl").html());
@@ -41,8 +44,10 @@ var replaceURLs = function(str) {
 };
 
 var markupURLs = function(str) {
-    return str.replace(/((?:http|input\/)[^"',\s]+)/g,
-        "<a href='$1' target=_blank>$1</a>");
+    return str.replace(/((?:http|input\/|output\/)[^"',\s]+)/g, function(url) {
+        var linkURL = url.replace(/output\//g, "output/" + sessionID + "/");
+        return "<a href='" + linkURL + "' target=_blank>" + url + "</a>";
+    });
 };
 
 var prettyCode = function(code) {
@@ -105,7 +110,8 @@ var runCode = function(noScroll) {
             blocks: JSON.stringify(curBlocks.map(function(curBlock) {
                 return {
                     name: curBlock.name,
-                    args: curBlock.args
+                    args: curBlock.args,
+                    session: curBlock.block.io.output ? sessionID : undefined
                 }
             }))
         },
