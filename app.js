@@ -34,6 +34,10 @@ app.use(function(req, res, next) {
         ""));
 });
 
+app.locals({
+    staticID: (new Date).getTime()
+});
+
 express.static.mime.define({"text/plain": ["csv", "tsv"]});
 
 // development only
