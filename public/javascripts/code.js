@@ -26,9 +26,7 @@ var renderCode = function(curBlocks, log) {
     var code = [];
 
     for (var name in requires) {
-        if (!log) {
-            code.push("var " + name + " = " + requires[name] + ";");
-        }
+        code.push("var " + name + " = " + requires[name] + ";");
     }
 
     code.push("");
