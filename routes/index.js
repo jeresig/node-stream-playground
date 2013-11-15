@@ -14,7 +14,7 @@ process.chdir(path.join(__dirname, "..", "public"));
 return {
     index: function(req, res) {
         res.render("index", {
-            blocks: blockConf
+            blocks: JSON.stringify(blockConf)
         });
     },
 
