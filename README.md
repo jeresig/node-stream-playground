@@ -5,8 +5,6 @@ Explore Node.js streams with an interactive playground.
 
 ![node-stream-playground](http://ejohn.org/files/node-stream-playground.500.jpg)
 
-Visit online: [http://nodestreams.com/](http://nodestreams.com/)
-
 The Node.js Stream Playground was created to help Node.js developers better understand how [streams](http://nodejs.org/api/stream.html) work by showing a number of use cases that are easily plug-and-play-able. Additionally detailed logging is provided at every step to help users better understand what events the streams are emitting and exactly what their contents are.
 
 Adding in New Streams
